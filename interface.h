@@ -1,4 +1,4 @@
 #include <stdio.h>
-void searchcase();
+int searchcase();
 void librariancase();
-void firstcase();
+int firstcase();

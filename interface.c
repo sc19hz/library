@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include"interface.h"
 int searchcase() {
 	printf("Please choose an option\n");
 	printf("1) Search by book title\n");
