@@ -1,9 +1,47 @@
 #include<stdio.h>
+#include<string.h>
 #include <windows.h>
 #include"book_management.h"
 #include"administrator.h"
 
-int um = 0;
+int um = 0;//number of the book
+
+int checknumvalid(char temp[20]) {
+	int i = 0,j=0,k;
+	for (i = 0;i < strlen(temp);i++) {
+		k = (int)temp[i];
+		if (k >= 48 && k <= 57) {
+			j++;
+
+		}
+		else
+		{
+			return 1;
+		}
+			
+	}
+	if (j == strlen(temp)) {
+		return 0;
+	}
+}
+int checkcharvalid(char temp[100]) {
+	int i = 0, j = 0, k;
+	for (i = 0;i < strlen(temp);i++) {
+		k = (int)temp[i];
+		if (k >= 48 && k <= 57) {
+			return 1;
+
+		}
+		else
+		{
+			j++;
+		}
+
+	}
+	if (j == strlen(temp)) {
+		return 0;
+	}
+}
 int librarian() {
 	long pas = 0;
 	while (pas != 7355607) {
@@ -69,8 +107,18 @@ void findauthor() {
 	Book a;
 	char temp[20];
 	getchar();
-	printf("Input the author you want to find\n");
-	gets(temp);
+	while (1) {
+		printf("Input the author you want to find\n");
+		gets(temp);
+		if (checkcharvalid(temp) == 1) 
+		{
+			printf("Invalid input!\n");
+		}
+		else {
+			
+			break;
+		}
+	}
 	FILE* fp;
 	fp = fopen("book.bin", "r");
 	fread(&a, sizeof(struct _Book), 1, fp);
@@ -135,10 +183,20 @@ int compare(char name1[20], char name2[5][20], int nu) {
 void findyear() {
 	int k = 1, k1 = 0;
 	int i = 0, j = 0;
+	char temp[20];
 	Book a, b;
 	getchar();
-	printf("Input the year you want to find\n");
-	scanf("%i", &a.year);
+	while (1) {
+		printf("Input the year you want to find\n");
+		gets(temp);
+		if (checknumvalid(temp) == 1) {
+			printf("invalid option!\n");
+		}
+		else {
+			a.year = atoi(temp);
+			break;
+		}
+	}
 
 	FILE* fp;
 	fp = fopen("book.bin", "r");
@@ -289,16 +347,38 @@ void addbook() {
 	getchar();
 	Book b;
 	FILE* file;
-	int i = 0, j = 0, k = 0, cou = 0;
+	char numb[20];
+	int i = 0, j = 0, k = 0, cou = 0,err=0;
 	char temp[100];
 	printf("Input the name of the book\n");
 	gets(b.bt);
 	printf("Input the author of the book\n");
 	gets(temp);
+	if (checkcharvalid(temp) == 1)
+		err++;
 	printf("Input the year of the book\n");
-	scanf("%i", &b.year);
+	gets(numb);
+	if (checknumvalid(numb) == 1)
+	{
+		err++;
+	}
+	else {
+		b.year = atoi(numb);
+	}
 	printf("Input the copies of the book\n");
-	scanf("%i", &b.copies);
+	gets(numb);
+	if (checknumvalid(numb) == 1)
+	{
+		err++;
+	}
+	else {
+		b.copies = atoi(numb);
+	}
+	if (err != 0)
+	{
+		printf("Sorry,you attempted to add an invalid book, please try again.\n");
+		return 0;
+	}
 	b.icopies = b.copies;
 	char* p = temp;
 	while (*p != '\0')
@@ -342,7 +422,7 @@ void addbook() {
 	file = fopen("book.bin", "a");
 	fwrite(&b, sizeof(struct _Book), 1, file);
 	fclose(file);
-	return &b;
+	printf("You have successfully added a book.\n");
 
 
 
@@ -392,9 +472,9 @@ void removebook() {
 				printf("Waiting...\n");
 				Sleep(1000);
 				fclose(fr);
-				
+				Sleep(200);
 				fclose(ft);
-				Sleep(1000);
+				Sleep(800);
 				remove("book.bin");
 				Sleep(1000);
 				rename("temp.bin", "book.bin");
